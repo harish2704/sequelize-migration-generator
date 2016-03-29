@@ -1,0 +1,22 @@
+{
+  "name": "sequelize-migration-generator",
+  "version": "0.0.1",
+  "description": "Sequelize migration file generator ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/harish2704/sequelize-migration-generator.git"
+  },
+  "keywords": [
+    "sequelize"
+  ],
+  "author": "Harish.K <harish2704@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/harish2704/sequelize-migration-generator/issues"
+  },
+  "homepage": "https://github.com/harish2704/sequelize-migration-generator#readme"
+}
