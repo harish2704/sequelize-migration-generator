@@ -1,5 +1,7 @@
 
 var util = require('util');
+var appRoot = __dirname + '/';
+var pwd = process.env.PWD + '/';
 
 if( typeof exports == 'undefined' ){ global.exports = {}; }
 
@@ -104,23 +106,16 @@ exports.Model = Model;
 
 
 if( require.main == module ){
-  
-  var models = require('./models');
+  var modelsDir = process.argv[2];
+  var models = require( pwd + modelsDir );
   var ect  = require('ect')();
   var fs = require( 'fs');
-
-  [
-    'model1',
-    'model2',
-    'model3',
-    'model4',
-    'model5',
-
-  ].forEach( function(modelName, i ){
+  var modelNames = Object.keys( models ).filter( function(v){ return (['Sequelize', 'sequelize' ].indexOf(v) === -1) } );
+  modelNames.forEach( function(modelName, i ){
     var m = new Model( models[modelName] );
-      var out = ect.render('./data/migration-file.js.ect', { model: m, fieldOpts: Field.opts });
+    var out = ect.render( appRoot + '../data/migration-file.js.ect', { model: m, fieldOpts: Field.opts });
     var timestamp = new Date( Date.now() + i ).toISOString().replace(/[-:.TZ]/g, '');
-    fs.writeFileSync( './migrations/' + timestamp + '-create_table_' + modelName + '_mi-generated.js', out );
+    fs.writeFileSync( pwd + 'migrations/' + timestamp + '-create_table_' + modelName + '_mi-generated.js', out );
   });
 
 }

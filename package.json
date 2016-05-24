@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/harish2704/sequelize-migration-generator/issues"
   },
-  "homepage": "https://github.com/harish2704/sequelize-migration-generator#readme"
+  "homepage": "https://github.com/harish2704/sequelize-migration-generator#readme",
+  "dependencies": {
+    "ect": "^0.5.9"
+  }
 }
