@@ -1,10 +1,5 @@
 
 var util = require('util');
-var appRoot = __dirname + '/';
-var pwd = process.env.PWD + '/';
-
-if( typeof exports == 'undefined' ){ global.exports = {}; }
-
 
 function Val( val ){
   this.val = val;
@@ -80,6 +75,10 @@ function Field( attr ){
 
 }
 
+Field.create = function( attr ){
+  return new Field( attr );
+}
+
 Field.opts = [
   'autoIncrement',
   'allowNull',
@@ -93,32 +92,25 @@ exports.Field = Field;
 
 
 
+
+
 function Model( model ){
   this.tableName = model.tableName;
   this.uniqueKeys = model.uniqueKeys;
-  this.fields = Object.keys( model.attributes ).map( function( key ){
-    return new Field( model.attributes[key] );
-  });
+  this.fields = Model.getReOrderedFields( model.attributes );
 }
+
+
+Model.getReOrderedFields = function( attsObj ){
+  var fieldNames = Object.keys( attsObj );
+  var indexOfIdField = fieldNames.indexOf( 'id' );
+  if( indexOfIdField > -1 ){
+    fieldNames = fieldNames.splice( indexOfIdField, 1 ).concat( fieldNames );
+  }
+  return fieldNames.map( function( name ){ return Field.create( attsObj[name] ); } );
+}
+
+
 exports.Model = Model;
-
-
-
-
-if( require.main == module ){
-  var modelsDir = process.argv[2];
-  var models = require( pwd + modelsDir );
-  var ect  = require('ect')();
-  var fs = require( 'fs');
-  var modelNames = Object.keys( models ).filter( function(v){ return (['Sequelize', 'sequelize' ].indexOf(v) === -1) } );
-  modelNames.forEach( function(modelName, i ){
-    var m = new Model( models[modelName] );
-    var out = ect.render( appRoot + '../data/migration-file.js.ect', { model: m, fieldOpts: Field.opts });
-    var timestamp = new Date( Date.now() + i ).toISOString().replace(/[-:.TZ]/g, '');
-    fs.writeFileSync( pwd + 'migrations/' + timestamp + '-create_table_' + modelName + '_mi-generated.js', out );
-  });
-
-}
-
 
 
