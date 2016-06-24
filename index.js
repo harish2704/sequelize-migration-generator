@@ -63,6 +63,7 @@ function Field( attr ){
 
   this.autoIncrement = new Val( attr.autoIncrement );
   this.allowNull     = new Val( attr.allowNull );
+  this.defaultValue  = new Val( attr.defaultValue );
   this.primaryKey    = new Val( attr.primaryKey );
   this.onDelete      = new QuotedVal( attr.onDelete );
   this.onUpdate      = new QuotedVal( attr.onUpdate );
@@ -82,6 +83,7 @@ Field.create = function( attr ){
 Field.opts = [
   'autoIncrement',
   'allowNull',
+  'defaultValue',
   'primaryKey',
   'onDelete',
   'onUpdate'
