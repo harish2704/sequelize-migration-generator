@@ -11,6 +11,8 @@ var Model = Classes.Model;
 var Field = Classes.Field;
 var modelsDir = process.argv[2];
 var migrationsDir = process.argv[3];
+var Sequelize = require("sequelize");
+var sequelize = new Sequelize();
 
 
 function getAbsPath( relPath ){
@@ -40,19 +42,34 @@ function createDir( pathName ){
   }
 }
 
+function importModels( modelDir ){
+
+  fs.readdirSync( modelsDir )
+    .filter( v => v.match(/\.model\.js/) )
+    .forEach(function(file) {
+       sequelize.import( path.join(modelsDir, file));
+    });
+  var models = sequelize.models;
+
+  Object.keys(models).forEach(function(modelName) {
+    if ( models[modelName].associate) {
+      models[modelName].associate(models);
+    }
+  });
+  return models;
+}
+
 
 function main(){
   modelsDir = getAbsPath( modelsDir );
   migrationsDir = getAbsPath( migrationsDir );
   createDir( migrationsDir );
   log( 'modelsDir', modelsDir );
-  var models = require( modelsDir );
+  var models = importModels( modelsDir );
 
   Object.keys( models )
     .forEach( function( modelName, i){
-      if( [ 'Sequelize', 'sequelize'].indexOf(modelName) === -1 ){
-        genMigration( models[ modelName ], i );
-      }
+      genMigration( models[ modelName ], i );
     });
 }
 
